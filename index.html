@@ -35,16 +35,16 @@
         <ul>
           <li>k represents how fast the disease will spread.</li>
           <li>Delta represents how much portion of Infected population will be converted to Susceptible. (If Delta = 0, this model is called Kermack and McKendrick's SIR model.)</li>
-          <li>Gamma represents how much portion of Infected population will be converted to Recevered. (If Gamma = 0, this model is a kind of SIS model.)</li>
+          <li>Gamma represents how much portion of Infected population will be converted to Recovered. (If Gamma = 0, this model is a kind of SIS model.)</li>
           <li>S_0 is initial population of Susceptible.</li>
           <li>I_0 is initial population of Infected.</li>
           <li>R_0 is initial population of Recovered.</li>
           <li>dt is the mesh size for numerical analysis.</li>
-          <li>steps is the number of steps to calculation.</li>
+          <li>steps is the number of steps for calculation.</li>
         </ul>
       </div>
       <h4 class="title is-4">The model</h4>
-      <div class="content">The model is a system of ordinary differential equations.</div>
+      <div class="content">The model used here is the following system of ordinary differential equations.</div>
       <div class="content">
         <ul>
           <li> dS(t)/dt = - k * I(t) * S(t) + delta * I(t)</li>
