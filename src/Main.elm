@@ -47,7 +47,7 @@ defaultModel =
     , parameters = defaultParameters
     , simulationSettings = defaultSimulationSettings
     , formValues = defaultFormValues
-    , errorMessages  = Set.empty
+    , errorMessages = Set.empty
     }
 
 
@@ -137,68 +137,92 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        formValues = model.formValues
-        parameters = model.parameters
-        initialValues = model.initialValues
-        simulationSettings = model.simulationSettings
-        errorMessages = model.errorMessages
-    in
-        case msg of
-            UpdateSolution ->
-                let
-                    newSolution =
-                        rungeKuttaMethod initialValues parameters simulationSettings
-                in
-                    ( { model | solution = newSolution }, updateChart newSolution )
-            UpdateK newK ->
-                case String.toFloat newK of
-                    Nothing ->
-                        ( { model | formValues = {formValues| k = newK}, errorMessages = (Set.insert "Invalid k" errorMessages)}, Cmd.none )
+        formValues =
+            model.formValues
 
-                    Just k ->
-                        ( { model | formValues = {formValues| k = newK}, errorMessages = (Set.remove "Invalid k" errorMessages), parameters = { parameters | k = k } }, Cmd.none )
-            UpdateDelta newDelta ->
-                case String.toFloat newDelta of
-                    Nothing ->
-                        ({model| formValues = {formValues| delta = newDelta}, errorMessages = (Set.insert "Invalid Delta" errorMessages)}, Cmd.none)
-                    Just delta ->
-                        ({model| formValues = {formValues| delta = newDelta}, errorMessages = (Set.remove "Invalid Delta" errorMessages), parameters= {parameters|delta = delta}}, Cmd.none)
-            UpdateGamma newGamma ->
-                case String.toFloat newGamma of
-                    Nothing ->
-                        ({model| formValues = {formValues| gamma = newGamma}, errorMessages = (Set.insert "Invalid Gamma" errorMessages)}, Cmd.none)
-                    Just gamma ->
-                        ({model| formValues = {formValues| gamma = newGamma}, errorMessages = (Set.remove "Invalid Gamma" errorMessages), parameters = {parameters| gamma = gamma}}, Cmd.none)
-            UpdateS0 newS0 ->
-                case String.toFloat newS0 of
-                    Nothing ->
-                        ({model| formValues = {formValues| s0 = newS0}, errorMessages=(Set.insert "Invalid S_0" errorMessages)}, Cmd.none)
-                    Just s0 ->
-                        ({model| formValues = {formValues| s0 = newS0}, errorMessages= (Set.remove "Invalid S_0" errorMessages), initialValues = {initialValues| s = s0}}, Cmd.none)
-            UpdateI0 newI0 ->
-                case String.toFloat newI0 of
-                    Nothing ->
-                        ({model| formValues = {formValues| i0 = newI0}, errorMessages=(Set.insert "Invalid I_0" errorMessages)}, Cmd.none)
-                    Just i0 ->
-                        ({model| formValues = {formValues| i0 = newI0}, errorMessages= (Set.remove "Invalid I_0" errorMessages), initialValues = {initialValues| i = i0}}, Cmd.none)
-            UpdateR0 newR0 ->
-                case String.toFloat newR0 of
-                    Nothing ->
-                        ({model| formValues = {formValues| r0 = newR0}, errorMessages=(Set.insert "Invalid R_0" errorMessages)}, Cmd.none)
-                    Just r0 ->
-                        ({model| formValues = {formValues| r0 = newR0}, errorMessages= (Set.remove "Invalid R_0" errorMessages), initialValues = {initialValues| r = r0}}, Cmd.none)
-            UpdateDt newDt ->
-                case String.toFloat newDt of
-                    Nothing ->
-                        ({model| formValues = {formValues| dt = newDt}, errorMessages=(Set.insert "Invalid dt" errorMessages)}, Cmd.none)
-                    Just dt ->
-                        ({model| formValues = {formValues| dt = newDt}, errorMessages= (Set.remove "Invalid dt" errorMessages), simulationSettings = {simulationSettings| dt = dt}}, Cmd.none)
-            UpdateSteps newSteps ->
-                case String.toInt newSteps of
-                    Nothing ->
-                        ({model| formValues = {formValues| steps = newSteps}, errorMessages=(Set.insert "Invalid steps" errorMessages)}, Cmd.none)
-                    Just steps ->
-                        ({model| formValues = {formValues| steps = newSteps}, errorMessages= (Set.remove "Invalid steps" errorMessages), simulationSettings = {simulationSettings | steps = steps}}, Cmd.none)
+        parameters =
+            model.parameters
+
+        initialValues =
+            model.initialValues
+
+        simulationSettings =
+            model.simulationSettings
+
+        errorMessages =
+            model.errorMessages
+    in
+    case msg of
+        UpdateSolution ->
+            let
+                newSolution =
+                    rungeKuttaMethod initialValues parameters simulationSettings
+            in
+            ( { model | solution = newSolution }, updateChart newSolution )
+
+        UpdateK newK ->
+            case String.toFloat newK of
+                Nothing ->
+                    ( { model | formValues = { formValues | k = newK }, errorMessages = Set.insert "Invalid k" errorMessages }, Cmd.none )
+
+                Just k ->
+                    ( { model | formValues = { formValues | k = newK }, errorMessages = Set.remove "Invalid k" errorMessages, parameters = { parameters | k = k } }, Cmd.none )
+
+        UpdateDelta newDelta ->
+            case String.toFloat newDelta of
+                Nothing ->
+                    ( { model | formValues = { formValues | delta = newDelta }, errorMessages = Set.insert "Invalid Delta" errorMessages }, Cmd.none )
+
+                Just delta ->
+                    ( { model | formValues = { formValues | delta = newDelta }, errorMessages = Set.remove "Invalid Delta" errorMessages, parameters = { parameters | delta = delta } }, Cmd.none )
+
+        UpdateGamma newGamma ->
+            case String.toFloat newGamma of
+                Nothing ->
+                    ( { model | formValues = { formValues | gamma = newGamma }, errorMessages = Set.insert "Invalid Gamma" errorMessages }, Cmd.none )
+
+                Just gamma ->
+                    ( { model | formValues = { formValues | gamma = newGamma }, errorMessages = Set.remove "Invalid Gamma" errorMessages, parameters = { parameters | gamma = gamma } }, Cmd.none )
+
+        UpdateS0 newS0 ->
+            case String.toFloat newS0 of
+                Nothing ->
+                    ( { model | formValues = { formValues | s0 = newS0 }, errorMessages = Set.insert "Invalid S_0" errorMessages }, Cmd.none )
+
+                Just s0 ->
+                    ( { model | formValues = { formValues | s0 = newS0 }, errorMessages = Set.remove "Invalid S_0" errorMessages, initialValues = { initialValues | s = s0 } }, Cmd.none )
+
+        UpdateI0 newI0 ->
+            case String.toFloat newI0 of
+                Nothing ->
+                    ( { model | formValues = { formValues | i0 = newI0 }, errorMessages = Set.insert "Invalid I_0" errorMessages }, Cmd.none )
+
+                Just i0 ->
+                    ( { model | formValues = { formValues | i0 = newI0 }, errorMessages = Set.remove "Invalid I_0" errorMessages, initialValues = { initialValues | i = i0 } }, Cmd.none )
+
+        UpdateR0 newR0 ->
+            case String.toFloat newR0 of
+                Nothing ->
+                    ( { model | formValues = { formValues | r0 = newR0 }, errorMessages = Set.insert "Invalid R_0" errorMessages }, Cmd.none )
+
+                Just r0 ->
+                    ( { model | formValues = { formValues | r0 = newR0 }, errorMessages = Set.remove "Invalid R_0" errorMessages, initialValues = { initialValues | r = r0 } }, Cmd.none )
+
+        UpdateDt newDt ->
+            case String.toFloat newDt of
+                Nothing ->
+                    ( { model | formValues = { formValues | dt = newDt }, errorMessages = Set.insert "Invalid dt" errorMessages }, Cmd.none )
+
+                Just dt ->
+                    ( { model | formValues = { formValues | dt = newDt }, errorMessages = Set.remove "Invalid dt" errorMessages, simulationSettings = { simulationSettings | dt = dt } }, Cmd.none )
+
+        UpdateSteps newSteps ->
+            case String.toInt newSteps of
+                Nothing ->
+                    ( { model | formValues = { formValues | steps = newSteps }, errorMessages = Set.insert "Invalid steps" errorMessages }, Cmd.none )
+
+                Just steps ->
+                    ( { model | formValues = { formValues | steps = newSteps }, errorMessages = Set.remove "Invalid steps" errorMessages, simulationSettings = { simulationSettings | steps = steps } }, Cmd.none )
 
 
 
@@ -219,19 +243,18 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        ([viewInput "k" "k" model.formValues.k UpdateK
-           , viewInput "delta" "Delta" model.formValues.delta UpdateDelta
-           , viewInput "gamma" "Gamma" model.formValues.gamma UpdateGamma
-           , viewInput "s0" "S_0" model.formValues.s0 UpdateS0
-           , viewInput "i0" "I_0" model.formValues.i0 UpdateI0
-           , viewInput "r0" "R_0" model.formValues.r0 UpdateR0
-           , viewInput "dt" "dt" model.formValues.dt UpdateDt
-           , viewInput "steps" "steps" model.formValues.steps UpdateSteps
-        ] ++
-
-            (List.map (\message -> div [class "notification is-danger is-light"][text message]) (Set.toList model.errorMessages))
-         ++ [div[class "field is-horizontal"][div[class "field-label"][], div[class "field-body"][div[class "field is-grouped"][div [class "control"][button [ onClick UpdateSolution, class "button is-primary" ] [ text "Update" ]]]]]]
-       )
+        ([ viewInput "k" "k" model.formValues.k UpdateK
+         , viewInput "delta" "Delta" model.formValues.delta UpdateDelta
+         , viewInput "gamma" "Gamma" model.formValues.gamma UpdateGamma
+         , viewInput "s0" "S_0" model.formValues.s0 UpdateS0
+         , viewInput "i0" "I_0" model.formValues.i0 UpdateI0
+         , viewInput "r0" "R_0" model.formValues.r0 UpdateR0
+         , viewInput "dt" "dt" model.formValues.dt UpdateDt
+         , viewInput "steps" "steps" model.formValues.steps UpdateSteps
+         ]
+            ++ List.map (\message -> div [ class "notification is-danger is-light" ] [ text message ]) (Set.toList model.errorMessages)
+            ++ [ div [ class "field is-horizontal" ] [ div [ class "field-label" ] [], div [ class "field-body" ] [ div [ class "field is-grouped" ] [ div [ class "control" ] [ button [ onClick UpdateSolution, class "button is-primary" ] [ text "Update" ] ] ] ] ] ]
+        )
 
 
 viewInput : String -> String -> String -> (String -> Msg) -> Html Msg
@@ -248,8 +271,6 @@ viewInput labelId labelText val inputHandler =
                         , class "input"
                         , value val
                         , onInput inputHandler
-
-                        {- Events -}
                         ]
                         []
                     ]
