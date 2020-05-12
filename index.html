@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Epidemiological Model Simulator">
+    <meta name="author" content="Tomotaka Takahashi">
+    <link rel="stylesheet" type="text/css" href="bulma.min.css">
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="Chart.bundle.min.js"></script>
+    <title>Epidemiological Model Simulator</title>
+      
+  </head>
+  <body>
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Epidemiological Model Simulator
+          </h1>
+          <h2 class="subtitle">
+            SIS model for the common cold and influenza and Kermack and McKendrick's SIR model for measles and mumps.
+          </h2>
+        </div>
+      </div>
+    </section>
+    <div class="columns">
+      <div class="column is-half"><h3 class="title is-3">Chart</h3><canvas id="myChart"></canvas></div>
+      <div class="column is-half"><h3 class="title is-3">Settings</h3><div id="myapp"></div></div>
+    </div>
+    <div>
+      <h3 class="title is-3">Description</h3>
+      <h4 class="title is-4">Variables</h4>
+      <div class="content">
+        <ul>
+          <li>k represents how fast the disease will spread.</li>
+          <li>Delta represents how much portion of Infected population will be converted to Susceptible. (If Delta = 0, this model is called Kermack and McKendrick's SIR model.)</li>
+          <li>Gamma represents how much portion of Infected population will be converted to Recevered. (If Gamma = 0, this model is a kind of SIS model.)</li>
+          <li>S_0 is initial population of Susceptible.</li>
+          <li>I_0 is initial population of Infected.</li>
+          <li>R_0 is initial population of Recovered.</li>
+          <li>dt is the mesh size for numerical analysis.</li>
+          <li>steps is the number of steps to calculation.</li>
+        </ul>
+      </div>
+      <h4 class="title is-4">The model</h4>
+      <div class="content">The model is a system of ordinary differential equations.</div>
+      <div class="content">
+        <ul>
+          <li> dS(t)/dt = - k * I(t) * S(t) + delta * I(t)</li>
+          <li> dI(t)/dt = k * I(t) * S(t) - (gamma + delta) * I(t)</li>
+          <li> dR(t)/dt = gamma * I(t)</li>
+        </ul>
+      </div>
+      <div class="content">
+        The solution is calculated by RK4.
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    const app = Elm.Main.init({
+       node: document.getElementById('myapp')
+    });
+
+    app.ports.updateChart.subscribe(function(solution){
+        const labels = [...solution.keys()];
+        const ss = solution.map(x => x.s);
+        const is = solution.map(x => x.i);
+        const rs = solution.map(x => x.r);
+
+        chartConfig.data.labels = labels;
+        chartConfig.data.datasets[0].data = ss;
+        chartConfig.data.datasets[1].data = is;
+        chartConfig.data.datasets[2].data = rs;
+        myChart.update();
+    });
+    
+    const chartConfig = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Susceptible',
+                borderColor: 'hsl(141, 53%, 53%)',
+                data: [],
+                pointRadius: 0,
+                fill: false
+            },{
+                label: 'Infected',
+                borderColor: 'hsl(348, 100%, 61%)',
+                data: [],
+                pointRadius: 0,
+                fill:false
+            }, {
+                label: 'Recovered',
+                borderColor: 'hsl(0, 0%, 40%)',
+                data: [],
+                pointRadius: 0,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                    },
+                    gridLines: {
+                        display: true,
+                        drawBorder: true,
+                        drawOnChartArea: false
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Population'
+                    },
+                    gridLines: {
+                        display: true,
+                        drawBorder: true,
+                        drawOnChartArea: false
+                    }
+                }]
+            },
+            animation: {
+                duration: 0
+            },
+            responsiveAnimationDuration: 0,
+            elements :{
+                line:{
+                    tension: 0
+                }
+            }
+        }
+    };
+
+                       
+    const myChart = new Chart(document.getElementById('myChart').getContext('2d'), chartConfig);
+
+
+  </script>
+</html>
