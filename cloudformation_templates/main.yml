@@ -54,7 +54,6 @@ Resources:
             - HEAD
             - OPTIONS
           Compress: true
-          DefaultTTL: 60 # short for test
           ForwardedValues:
             QueryString: true
           TargetOriginId: origin1
