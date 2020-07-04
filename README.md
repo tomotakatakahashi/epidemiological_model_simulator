@@ -11,7 +11,7 @@ Complete validation
 
 
 ```
-AcmCertificateArn=<Your arn for the certificate>
+ACM_CERTIFICATE_ARN=<Your arn for the certificate>
 DOMAIN_NAME=<your domain name>
 LOGGING_BUCKET_NAME=<your logging bucket name>
 CONTENT_BUCKET_NAME=<your content bucket name>
