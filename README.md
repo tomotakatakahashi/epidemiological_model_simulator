@@ -3,12 +3,11 @@
 ## Deployment
 `elm make src/Main.elm --output deployment/main.js --optimize`
 
+Upload `deployment/*` to S3 bucket `$CONTENT_BUCKET_NAME`.
 
 `aws acm request-certificate --domain-name ${DOMAIN_NAME} --validation-method DNS --idempotency-token 20200513 --region us-east-1`
 
 Complete validation
-
-
 
 ```
 ACM_CERTIFICATE_ARN=<Your arn for the certificate>
@@ -27,4 +26,3 @@ aws cloudformation deploy \
 ```
 
 Configure DNS server
-
