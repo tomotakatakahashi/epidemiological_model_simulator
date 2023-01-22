@@ -1,5 +1,7 @@
 # Epidemiological Model Simulator
 
+![demo](./demo.gif)
+
 ## Deployment
 `elm make src/Main.elm --output deployment/main.js --optimize`
 
